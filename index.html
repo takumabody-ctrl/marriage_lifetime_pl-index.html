@@ -1,0 +1,818 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>結婚しなかった生涯 損益計算機｜あなたの“結婚した道”と“独身の道”は生涯でいくら違うか</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ====== TOKENS ====== */
+:root{
+  --bg:#0a0a0f; --card:#0d1421; --border:#1e2d40; --border-strong:#2d4055;
+  --text:#f0f4f8; --muted:#94a5b8; --dim:#4a5568;
+  --red:#ef4444; --amber:#f59e0b; --cyan:#06b6d4; --green:#22c55e; --purple:#a855f7;
+  /* シリーズカラー：人生の選択＝パープル×シアン */
+  --series-main:#a855f7; --series-sub:#06b6d4;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:var(--bg);color:var(--text);font-family:"Noto Sans JP",sans-serif;-webkit-text-size-adjust:100%}
+body{display:flex;justify-content:center}
+.wrap{width:100%;max-width:480px;padding:20px 16px 60px;position:relative;overflow:hidden}
+.wrap::before{content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:380px;height:380px;background:radial-gradient(circle,rgba(168,85,247,.18),transparent 70%);pointer-events:none;z-index:0}
+.num{font-family:"Orbitron",sans-serif}
+.hidden{display:none !important}
+section,header,footer{position:relative;z-index:1}
+
+/* ====== HEADER ====== */
+header{text-align:center;padding:8px 0 18px}
+.kicker{font-family:"Orbitron";font-size:11px;letter-spacing:3px;color:var(--series-sub);font-weight:700}
+h1{font-size:24px;font-weight:900;margin:8px 0 6px;line-height:1.35;letter-spacing:.5px}
+h1 .hl{color:var(--series-main)}
+.sub{font-size:12.5px;color:var(--muted);line-height:1.7}
+.price-badge{display:inline-block;margin-top:12px;font-family:"Orbitron";font-size:11px;font-weight:700;color:var(--series-sub);border:1px solid var(--border-strong);border-radius:20px;padding:5px 14px;letter-spacing:1px}
+
+/* ====== HERO VISUAL (SVG) ====== */
+.hero-visual{display:flex;justify-content:center;margin:14px 0 10px}
+
+/* ====== HERO IMPACT BOX ====== */
+.hero-impact{background:rgba(168,85,247,.06);border:1px solid var(--border-strong);border-radius:12px;padding:14px;margin:16px 0 12px;text-align:left}
+.hi-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.hi-item:last-child{border-bottom:none}
+.hi-icon{font-size:18px;flex-shrink:0;margin-top:2px}
+.hi-text{font-size:12px;color:var(--text);line-height:1.6}
+.hi-hl{color:var(--series-sub);font-weight:700}
+.hi-src{font-size:10px;color:var(--dim);margin-top:3px}
+
+/* ====== SECTION LABEL ====== */
+.section-label{font-family:"Orbitron",sans-serif;font-size:10px;letter-spacing:0.3em;color:var(--series-main);text-align:center;margin:20px 0 8px;font-weight:700}
+
+/* ====== CARD ====== */
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:20px 18px;margin:14px 0}
+.card-title{font-size:13px;font-weight:700;color:var(--muted);margin-bottom:16px;letter-spacing:1px;display:flex;align-items:center;gap:7px}
+.card-title::before{content:"";width:3px;height:14px;background:var(--series-main);border-radius:2px}
+
+/* ====== SLIDER ====== */
+.field{margin-bottom:20px}
+.field:last-child{margin-bottom:0}
+.field-top{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:9px}
+.field-label{font-size:13px;font-weight:500;color:var(--text)}
+.field-val{font-family:"Orbitron";font-weight:700;font-size:17px;color:var(--series-sub)}
+.field-val small{font-size:11px;color:var(--muted);margin-left:2px}
+input[type=range]{-webkit-appearance:none;width:100%;height:6px;border-radius:5px;background:linear-gradient(90deg,var(--series-main),var(--series-sub));outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--series-main);box-shadow:0 0 10px rgba(168,85,247,.6);cursor:pointer}
+input[type=range]::-moz-range-thumb{width:24px;height:24px;border-radius:50%;background:#fff;border:3px solid var(--series-main);cursor:pointer}
+.field-hint{font-size:10.5px;color:var(--dim);margin-top:6px}
+.err{color:var(--red);font-size:11px;margin-top:8px;font-weight:700}
+
+/* ====== CTA BUTTON ====== */
+.btn{width:100%;border:none;border-radius:12px;padding:16px;font-family:"Noto Sans JP";font-size:15px;font-weight:900;color:#fff;background:linear-gradient(90deg,var(--series-main),var(--series-sub));cursor:pointer;letter-spacing:1px;box-shadow:0 6px 20px rgba(168,85,247,.32);transition:transform .1s}
+.btn:active{transform:scale(.98)}
+.btn-ghost{background:transparent;border:1px solid var(--border-strong);color:var(--muted);box-shadow:none;font-size:13px;font-weight:700}
+
+/* ====== RESULT ====== */
+#result{animation:fadeIn .6s ease forwards}
+.fade-in{animation:fadeIn .6s ease forwards}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.verdict{text-align:center;padding:6px 0 4px}
+.verdict-tag{display:inline-block;font-family:"Orbitron";font-size:11px;font-weight:700;letter-spacing:2px;padding:5px 14px;border-radius:20px;margin-bottom:14px}
+.tag-light{color:var(--green);border:1px solid var(--green)}
+.tag-mid{color:var(--amber);border:1px solid var(--amber)}
+.tag-heavy{color:var(--red);border:1px solid var(--red)}
+.big-num{font-family:"Orbitron";font-weight:900;font-size:46px;line-height:1;color:var(--series-main);text-shadow:0 0 24px rgba(168,85,247,.45)}
+.big-unit{font-size:18px;color:var(--text);font-weight:700;margin-left:4px}
+.big-cap{font-size:12px;color:var(--muted);margin-top:8px;line-height:1.6}
+
+/* ====== DONUT ====== */
+.donut-wrap{display:flex;justify-content:center;margin:18px 0 6px}
+.donut{position:relative;width:170px;height:170px}
+.donut svg{transform:rotate(-90deg)}
+.donut-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.donut-score{font-family:"Orbitron";font-weight:900;font-size:38px;color:var(--series-sub)}
+.donut-label{font-size:10px;color:var(--muted);letter-spacing:1px;margin-top:2px;text-align:center;padding:0 6px}
+
+/* ====== BIDIRECTIONAL CARD ====== */
+.bi-title{font-size:15px;font-weight:900;text-align:center;line-height:1.4;margin-bottom:14px}
+.bi-row{border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:10px;background:#0a0f1a}
+.bi-row-a{border-color:rgba(6,182,212,.5)}
+.bi-row-b{border-color:rgba(168,85,247,.5)}
+.bi-label{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.bi-amount{font-family:"Orbitron";font-weight:900;font-size:26px}
+.bi-row-a .bi-amount{color:var(--series-sub)}
+.bi-row-b .bi-amount{color:var(--series-main)}
+.bi-amount small{font-size:13px;margin-left:3px;font-weight:700}
+.bi-note{font-size:10.5px;color:var(--dim);margin-top:5px;line-height:1.5}
+.bi-diff{border-top:1px dashed var(--border-strong);margin-top:14px;padding-top:14px;text-align:center}
+.bi-diff-label{font-family:"Orbitron";font-size:10px;letter-spacing:2px;color:var(--muted)}
+.bi-diff-amount{font-family:"Orbitron";font-weight:900;font-size:30px;color:var(--text);margin:6px 0}
+.bi-diff-note{font-size:12px;color:var(--text);line-height:1.6;font-weight:700}
+.bi-diff-note b{color:var(--series-sub)}
+
+/* ====== STAT GRID ====== */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.stat{background:#0a0f1a;border:1px solid var(--border);border-radius:12px;padding:14px 10px;text-align:center}
+.stat-v{font-family:"Orbitron";font-weight:700;font-size:20px;color:var(--text)}
+.stat-l{font-size:10px;color:var(--muted);margin-top:5px;line-height:1.4}
+
+/* ====== IMPACT BOX ====== */
+.impact-box{background:linear-gradient(135deg,rgba(168,85,247,.1),rgba(6,182,212,.06));border:1px solid var(--border-strong);border-radius:12px;padding:15px;margin-top:14px}
+.impact-line{font-size:13px;line-height:1.85;color:var(--text)}
+.impact-line b{color:var(--series-sub)}
+.impact-src{font-size:10px;color:var(--dim);margin-top:10px;line-height:1.6}
+
+/* ====== IMPROVE CARD ====== */
+.improve-badge{display:inline-block;font-family:"Orbitron";font-size:10px;font-weight:700;letter-spacing:1px;color:var(--green);border:1px solid var(--green);border-radius:5px;padding:3px 9px;margin-bottom:10px}
+.improve-title{font-size:16px;font-weight:900;line-height:1.4;margin-bottom:14px}
+.improve-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:1px solid var(--border)}
+.improve-row:last-child{border-bottom:none}
+.improve-label{font-size:12px;color:var(--muted)}
+.improve-val{font-family:"Orbitron";font-weight:700;font-size:18px;color:var(--green)}
+.improve-summary{font-size:11.5px;color:var(--text);line-height:1.7;margin-top:12px;background:#0a0f1a;border-radius:10px;padding:12px}
+
+/* ====== PLAN ====== */
+.plan-step{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--border)}
+.plan-step:last-child{border-bottom:none}
+.plan-no{flex:0 0 30px;height:30px;border-radius:8px;background:var(--series-main);color:#fff;font-family:"Orbitron";font-weight:700;font-size:14px;display:flex;align-items:center;justify-content:center}
+.plan-txt{font-size:12.5px;line-height:1.6}
+.plan-txt b{color:var(--series-sub)}
+
+/* ====== AFFILIATE ====== */
+.aff-card{background:var(--card);border:1px solid var(--border-strong);border-radius:16px;padding:16px;margin:14px 0}
+.aff-header{display:flex;align-items:center;gap:8px;margin-bottom:14px}
+.aff-badge{font-family:"Orbitron";font-size:10px;font-weight:700;letter-spacing:1px;color:var(--series-sub);border:1px solid var(--series-sub);border-radius:5px;padding:3px 7px}
+.aff-title{font-size:12.5px;font-weight:700;color:var(--text);flex:1;line-height:1.4}
+.aff-pr{font-size:9.5px;font-weight:700;color:var(--dim);border:1px solid var(--dim);border-radius:4px;padding:2px 6px;letter-spacing:1px}
+.aff-items{display:flex;flex-direction:column;gap:10px}
+.aff-item{display:flex;align-items:center;gap:12px;background:#0a0f1a;border:1px solid var(--border);border-radius:12px;padding:13px 12px;text-decoration:none;color:inherit;transition:border-color .15s}
+.aff-item:active{border-color:var(--series-main)}
+.aff-item-emoji{font-size:26px;flex:0 0 auto}
+.aff-item-info{flex:1;min-width:0}
+.aff-item-name{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px}
+.aff-item-copy{font-size:11px;color:var(--muted);line-height:1.5}
+.aff-item-price{font-family:"Orbitron";font-size:11px;color:var(--series-sub);margin-top:4px;font-weight:700}
+.aff-item-arrow{color:var(--series-sub);font-size:18px;font-weight:700;flex:0 0 auto}
+.aff-note{font-size:10px;color:var(--dim);margin-top:12px;line-height:1.6}
+
+/* ====== NEXT TOOL / LINE CTA ====== */
+.next-card{background:linear-gradient(135deg,#13203a,#0d1421);border:1px solid var(--series-main);border-radius:14px;padding:16px;margin:14px 0;text-align:center}
+.next-k{font-family:"Orbitron";font-size:10px;letter-spacing:2px;color:var(--series-main);font-weight:700}
+.next-t{font-size:14px;font-weight:900;margin:8px 0 4px;line-height:1.4}
+.next-s{font-size:11px;color:var(--muted);line-height:1.6;margin-bottom:12px}
+.line-cta{display:block;text-decoration:none;background:#06c755;color:#fff;font-weight:900;font-size:13px;border-radius:10px;padding:13px;margin-top:10px;letter-spacing:.5px}
+
+/* ====== SHARE / NOTE ====== */
+.share-row{display:flex;gap:10px;margin-top:6px}
+.share-row .btn{padding:13px}
+.note-banner{display:block;text-decoration:none;background:linear-gradient(135deg,#0d1421,#13203a);border:1px solid var(--series-sub);border-radius:14px;padding:16px;margin:14px 0;text-align:center}
+.note-banner .nb-k{font-family:"Orbitron";font-size:10px;letter-spacing:2px;color:var(--series-sub);font-weight:700}
+.note-banner .nb-t{font-size:14px;font-weight:900;color:var(--text);margin:7px 0 4px;line-height:1.4}
+.note-banner .nb-s{font-size:11px;color:var(--muted)}
+.note-banner .nb-price{font-family:"Orbitron";color:var(--series-sub);font-weight:700;margin-top:8px;font-size:13px}
+
+/* ====== FOOTER ====== */
+footer{text-align:center;margin-top:26px;padding-top:18px;border-top:1px solid var(--border)}
+.foot-links{font-size:11px;color:var(--muted);line-height:2}
+.disclaimer{font-size:10px;color:var(--muted);line-height:1.7;margin-top:14px;text-align:left;background:#0a0f1a;border:1px solid var(--border);border-radius:10px;padding:13px}
+.disclaimer-title{font-weight:700;color:var(--text);margin-bottom:6px;font-size:11px}
+.disclaimer p{margin:3px 0}
+.disclaimer b{color:var(--series-sub)}
+.logo{font-family:"Orbitron";font-weight:900;font-size:14px;letter-spacing:2px;color:var(--text);margin-top:16px}
+.logo span{color:var(--series-main)}
+.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--series-main);color:#fff;font-size:13px;font-weight:700;padding:12px 22px;border-radius:30px;box-shadow:0 6px 24px rgba(0,0,0,.5);transition:transform .35s;z-index:99}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ====== HEADER ====== -->
+  <header>
+    <div class="kicker">LIFE CHOICE / MARRIAGE LIFETIME P&amp;L</div>
+
+    <div class="hero-visual">
+      <svg width="150" height="90" viewBox="0 0 150 90">
+        <!-- 分岐点 -->
+        <circle cx="20" cy="45" r="6" fill="#f0f4f8">
+          <animate attributeName="r" values="6;7.5;6" dur="2.5s" repeatCount="indefinite"/>
+        </circle>
+        <!-- 道A：結婚（シアン・上に分岐） -->
+        <path d="M20 45 Q70 45 80 20 T140 14" fill="none" stroke="#06b6d4" stroke-width="3" stroke-linecap="round" stroke-dasharray="160" stroke-dashoffset="160">
+          <animate attributeName="stroke-dashoffset" values="160;0" dur="2s" begin="0.2s" fill="freeze"/>
+        </path>
+        <circle cx="140" cy="14" r="5" fill="#06b6d4" opacity="0">
+          <animate attributeName="opacity" values="0;0;1" dur="2.2s" begin="0s" fill="freeze"/>
+          <animate attributeName="r" values="5;6.5;5" dur="2s" begin="2.2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- 道B：独身（パープル・下に分岐） -->
+        <path d="M20 45 Q70 45 80 70 T140 78" fill="none" stroke="#a855f7" stroke-width="3" stroke-linecap="round" stroke-dasharray="160" stroke-dashoffset="160">
+          <animate attributeName="stroke-dashoffset" values="160;0" dur="2s" begin="0.2s" fill="freeze"/>
+        </path>
+        <circle cx="140" cy="78" r="5" fill="#a855f7" opacity="0">
+          <animate attributeName="opacity" values="0;0;1" dur="2.2s" begin="0s" fill="freeze"/>
+          <animate attributeName="r" values="5;6.5;5" dur="2s" begin="2.2s" repeatCount="indefinite"/>
+        </circle>
+        <!-- ¥マーク -->
+        <text x="118" y="9" font-family="Orbitron" font-size="11" fill="#06b6d4" font-weight="700" opacity="0.85">&#165;</text>
+        <text x="118" y="90" font-family="Orbitron" font-size="11" fill="#a855f7" font-weight="700" opacity="0.85">&#165;</text>
+      </svg>
+    </div>
+
+    <h1>結婚した道と<span class="hl">独身の道</span>は<br>生涯でいくら違うのか</h1>
+    <p class="sub">「結婚しない＝損」ではありません。<br>5つの入力で、2つの道の生涯収支を<b style="color:var(--series-sub)">両方向</b>で数値化します。</p>
+
+    <div class="hero-impact">
+      <div class="hi-item">
+        <span class="hi-icon">💍</span>
+        <div>
+          <div class="hi-text">
+            50歳時点で一度も結婚していない割合は男性
+            <b class="hi-hl">約28%</b>・女性 約18%
+          </div>
+          <div class="hi-src">参考：国立社会保障・人口問題研究所「人口統計資料集」・参考値</div>
+        </div>
+      </div>
+      <div class="hi-item">
+        <span class="hi-icon">🏠</span>
+        <div>
+          <div class="hi-text">
+            単身世帯は日本の全世帯の
+            <b class="hi-hl">約38%</b>（最多区分）
+          </div>
+          <div class="hi-src">参考：総務省「国勢調査」世帯構成・参考値</div>
+        </div>
+      </div>
+      <div class="hi-item">
+        <span class="hi-icon">💰</span>
+        <div>
+          <div class="hi-text">
+            子ども1人を22歳まで育てる総額は
+            <b class="hi-hl">約2,500万円</b>規模
+          </div>
+          <div class="hi-src">参考：日本政策金融公庫ほか 養育・教育費調査・参考値</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="price-badge">無料診断 / 両方向シミュレーション</div>
+  </header>
+
+  <!-- ====== INPUT SECTION ====== -->
+  <section id="inputSection" class="card">
+    <div class="section-label">STEP 01 / YOUR LIFE DATA</div>
+    <div class="card-title">あなたの条件を入力</div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">現在の年齢</span>
+        <span class="field-val"><span id="ageV" class="num">35</span><small>歳</small></span>
+      </div>
+      <input type="range" id="age" min="30" max="45" step="1" value="35">
+      <div class="field-hint">残りの人生年数と働ける年数の計算に使います（平均寿命87歳・参考値）</div>
+    </div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">あなたの年収</span>
+        <span class="field-val"><span id="incomeV" class="num">450</span><small>万円</small></span>
+      </div>
+      <input type="range" id="income" min="200" max="1000" step="10" value="450">
+      <div class="field-hint">税込みのおおよその年収でOK</div>
+    </div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">結婚した場合の配偶者の想定年収</span>
+        <span class="field-val"><span id="partnerV" class="num">350</span><small>万円</small></span>
+      </div>
+      <input type="range" id="partner" min="0" max="800" step="10" value="350">
+      <div class="field-hint">共働き前提なら相手の年収。専業想定なら0に近づけてください</div>
+    </div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">結婚した場合に持つ子どもの想定人数</span>
+        <span class="field-val"><span id="kidsV" class="num">1</span><small>人</small></span>
+      </div>
+      <input type="range" id="kids" min="0" max="3" step="1" value="1">
+      <div class="field-hint">1人あたり22歳まで約2,500万円で試算（参考値）</div>
+    </div>
+
+    <div class="field">
+      <div class="field-top">
+        <span class="field-label">毎月の自由に使えるお金（趣味・交際費）</span>
+        <span class="field-val"><span id="freeV" class="num">5</span><small>万円</small></span>
+      </div>
+      <input type="range" id="free" min="1" max="20" step="1" value="5">
+      <div class="field-hint">独身の道では維持されやすい支出。多いほど“備え”が削られます</div>
+    </div>
+
+    <div id="inputErr" class="err hidden"></div>
+    <div style="margin-top:20px">
+      <button class="btn" id="calcBtn">2つの道の生涯損益を計算する</button>
+    </div>
+  </section>
+
+  <!-- ====== RESULT SECTION ====== -->
+  <section id="result" class="hidden">
+
+    <!-- 結論：差額 -->
+    <div class="section-label">LIFETIME DIFFERENCE</div>
+    <div class="card">
+      <div class="verdict">
+        <div id="verdictTag" class="verdict-tag">判定</div>
+        <div>
+          <span id="bigNum" class="big-num num">0</span><span class="big-unit">万円</span>
+        </div>
+        <div class="big-cap" id="bigCap">2つの道の生涯収支の差額です</div>
+      </div>
+
+      <!-- ====== DONUT ====== -->
+      <div class="donut-wrap">
+        <div class="donut">
+          <svg width="170" height="170" viewBox="0 0 170 170">
+            <circle cx="85" cy="85" r="72" fill="none" stroke="#1e2d40" stroke-width="14"/>
+            <circle id="donutArc" cx="85" cy="85" r="72" fill="none" stroke="url(#grad)" stroke-width="14"
+                    stroke-linecap="round" stroke-dasharray="452" stroke-dashoffset="452"/>
+            <defs>
+              <linearGradient id="grad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#a855f7"/>
+                <stop offset="1" stop-color="#06b6d4"/>
+              </linearGradient>
+            </defs>
+          </svg>
+          <div class="donut-center">
+            <div id="donutScore" class="donut-score num">0</div>
+            <div class="donut-label">おひとり様<br>経済リスク指数</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center;font-size:10.5px;color:var(--dim);margin-top:4px">この指数は<b style="color:var(--muted)">高いほど、独身を選ぶ場合に経済的な備えが必要</b>な状態として算出します（0〜100・参考値）</div>
+    </div>
+
+    <!-- ====== BIDIRECTIONAL RESULT ====== -->
+    <div class="card">
+      <div class="section-label">BIDIRECTIONAL RESULT</div>
+      <h3 class="bi-title">あなたの条件での<br>2つの道の生涯収支</h3>
+
+      <div class="bi-row bi-row-a">
+        <div class="bi-label">A：結婚した道を選んだ場合（世帯の生涯収支）</div>
+        <div class="bi-amount"><span id="biAmountA" class="num">0</span><small>万円</small></div>
+        <div class="bi-note" id="biNoteA">世帯収入 − 結婚費用・子育て・二人世帯の生活費（参考値）</div>
+      </div>
+
+      <div class="bi-row bi-row-b">
+        <div class="bi-label">B：独身を通した道を選んだ場合（個人の生涯収支）</div>
+        <div class="bi-amount"><span id="biAmountB" class="num">0</span><small>万円</small></div>
+        <div class="bi-note" id="biNoteB">あなたの収入 − 単身生活費・自由支出・おひとり様老後コスト（参考値）</div>
+      </div>
+
+      <div class="bi-diff">
+        <div class="bi-diff-label">DIFFERENCE</div>
+        <div class="bi-diff-amount"><span id="biDiff" class="num">0</span>万円</div>
+        <div class="bi-diff-note" id="biDiffNote">あなたの条件では…</div>
+      </div>
+
+      <div class="impact-box">
+        <div id="impactLine" class="impact-line"></div>
+        <div class="impact-src">参考値：総務省「家計調査」（単身・二人以上世帯の生活費）／ゼクシィ結婚トレンド調査（結婚費用）／日本政策金融公庫ほか（子の養育・教育費）／国立社会保障・人口問題研究所（生涯未婚率）に基づく簡易試算です。実際の数値は個人の状況により異なります。本ツールは投資助言・税務助言ではありません。</div>
+      </div>
+    </div>
+
+    <!-- ====== STAT GRID ====== -->
+    <div class="card">
+      <div class="section-label">BREAKDOWN</div>
+      <div class="card-title">内訳の参考値</div>
+      <div class="stat-grid">
+        <div class="stat"><div id="statRemain" class="stat-v num">0</div><div class="stat-l">残りの人生（年）</div></div>
+        <div class="stat"><div id="statWork" class="stat-v num">0</div><div class="stat-l">働ける残り年数</div></div>
+        <div class="stat"><div id="statKidCost" class="stat-v num">0</div><div class="stat-l">子育て総額（参考値）</div></div>
+        <div class="stat"><div id="statFree" class="stat-v num">0</div><div class="stat-l">生涯の自由支出（独身時）</div></div>
+      </div>
+    </div>
+
+    <!-- ====== IMPROVE SIMULATION ====== -->
+    <div class="card" id="improveCard">
+      <div class="section-label">IMPROVEMENT SIMULATION</div>
+      <div class="improve-badge">IF YOU IMPROVE</div>
+      <h3 class="improve-title">もし年収を+50万円・<br>月の浪費を-2万円にしたら</h3>
+      <div class="improve-rows">
+        <div class="improve-row">
+          <span class="improve-label">独身の道で増える生涯の備え</span>
+          <span class="improve-val num" id="improveSolo">0万円</span>
+        </div>
+        <div class="improve-row">
+          <span class="improve-label">経済リスク指数の改善</span>
+          <span class="improve-val num" id="improveScore">0</span>
+        </div>
+        <div class="improve-row">
+          <span class="improve-label">10年続けた場合の備え</span>
+          <span class="improve-val num" id="improve10y">0万円</span>
+        </div>
+      </div>
+      <div class="improve-summary" id="improveSummary"></div>
+    </div>
+
+    <!-- ====== ACTION PLAN ====== -->
+    <div class="card">
+      <div class="section-label">ACTION DESIGN</div>
+      <div class="card-title">どちらの道でも“設計”で変わる</div>
+      <div id="planBox"></div>
+    </div>
+
+    <!-- ====== AFFILIATE (score-linked) ====== -->
+    <div class="section-label">RECOMMENDED ITEMS</div>
+    <div id="affZone"></div>
+
+    <!-- ====== NEXT TOOL / LINE (Tier A 送客導線) ====== -->
+    <div class="next-card">
+      <div class="next-k">NEXT DIAGNOSIS</div>
+      <div class="next-t" id="nextTitle">次に診断すべきは「おひとり様老後 必要資金」</div>
+      <div class="next-s">独身の道を選ぶなら、老後にいくら必要かまで数値化しておくと“備え”が具体になります。</div>
+      <a class="line-cta" id="lineCta" href="https://lin.ee/your-line-id" target="_blank" rel="noopener">LINEで老後資金の続きを受け取る →</a>
+    </div>
+
+    <!-- ====== NOTE BANNER ====== -->
+    <a class="note-banner" id="noteBanner" href="https://note.com/takuma_body/n/marriage-lifetime-pl" target="_blank" rel="noopener">
+      <div class="nb-k">PREMIUM NOTE</div>
+      <div class="nb-t" id="noteTitle">結婚しなかった生涯 損益｜後悔しない設計の全手順</div>
+      <div class="nb-s">2つの道それぞれの“勝ち筋”・老後資金の作り方・週次マネー設計まで</div>
+      <div class="nb-price">¥500 でいま読む →</div>
+    </a>
+
+    <!-- ====== SHARE ====== -->
+    <div class="card">
+      <div class="card-title">結果をシェアする</div>
+      <div class="share-row">
+        <button class="btn" id="shareX">Xでシェア</button>
+        <button class="btn btn-ghost" id="copyBtn">結果をコピー</button>
+      </div>
+    </div>
+
+    <div style="margin-top:8px">
+      <button class="btn btn-ghost" id="restartBtn">もう一度診断する</button>
+    </div>
+  </section>
+
+  <!-- ====== FOOTER ====== -->
+  <footer>
+    <div class="foot-links">姉妹ツール：おひとり様老後 必要資金 / FIRE達成率現実診断 / 完璧主義時間損失計算機</div>
+    <div class="disclaimer">
+      <div class="disclaimer-title">⚠️ ご利用にあたって</div>
+      <p>このツールの算出結果は、公開統計と一般的なシミュレーションに基づく<b>参考値</b>です。</p>
+      <p>個人の状況により実際の数値は異なります。</p>
+      <p>本ツールは医療診断・投資助言・法的判断・税務助言ではありません。</p>
+      <p>本ツールは複数の選択肢の参考値比較であり、特定の選択（結婚／独身）を推奨するものではありません。</p>
+      <p>結果は関心喚起を目的とした参考値であり、正確性を保証するものではありません。</p>
+      <p>重要な意思決定は、必ず専門家にご相談ください。掲載商品（PR）は薬機法に配慮した表現で紹介しています。効果には個人差があります。</p>
+    </div>
+    <div class="logo">TAKUMA<span>.</span>BODY</div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+/* ====== HELPERS ====== */
+const $ = id => document.getElementById(id);
+const show = el => el.classList.remove('hidden');
+const hide = el => el.classList.add('hidden');
+
+function fmtMan(man){
+  // 万円単位の値を 億/万 表記に（入力は万円）
+  man = Math.round(man);
+  const sign = man < 0 ? '-' : '';
+  const a = Math.abs(man);
+  if (a >= 10000) {
+    const oku = a / 10000;
+    return sign + (oku % 1 === 0 ? oku.toFixed(0) : oku.toFixed(1)) + '億' + (a % 10000 ? (a % 10000) + '万円' : '円');
+  }
+  return sign + a.toLocaleString() + '万円';
+}
+
+function countUp(el, target, duration=1500, isFloat=false){
+  let start=null;
+  const neg = target < 0;
+  const abs = Math.abs(target);
+  const frame=(ts)=>{
+    if(!start)start=ts;
+    const prog=Math.min((ts-start)/duration,1);
+    const ease=1-Math.pow(1-prog,3);
+    const val=abs*ease;
+    el.textContent=(neg?'-':'')+(isFloat?val.toFixed(1):Math.floor(val).toLocaleString());
+    if(prog<1)requestAnimationFrame(frame);
+    else el.textContent=(neg?'-':'')+(isFloat?abs.toFixed(1):Math.round(abs).toLocaleString());
+  };
+  requestAnimationFrame(frame);
+}
+
+/* ====== CONSTANTS (参考値) ====== */
+const LIFE = 87;        // 平均寿命（参考値）
+const RETIRE = 65;      // 定年
+const LIVING_SINGLE = 192;   // 単身世帯の生活費 万円/年（家計調査・参考値）
+const LIVING_COUPLE = 312;   // 二人以上世帯の生活費 万円/年（家計調査・参考値）
+const WEDDING = 300;         // 結婚費用 万円（参考値）
+const KID_COST = 2500;       // 子1人22歳まで 万円（参考値）
+const SOLO_OLDAGE = 800;     // おひとり様老後追加コスト 万円（参考値）
+
+/* ====== AFFILIATE DATA (selected_affiliate.md 連動) ====== */
+const RAKUTEN_NOLTY = "https://hb.afl.rakuten.co.jp/ichiba/54b74390.483eab27.54b74391.b901bb92/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fnolty%2F6319%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJjb2wiOjEsImJidG4iOjEsInByb2QiOjAsImFtcCI6ZmFsc2V9";
+const RAKUTEN_NIGHT = "https://hb.afl.rakuten.co.jp/ichiba/54c608ed.24eaedf8.54c608ee.4c228213/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fduen1102%2F20000000%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D";
+const RAKUTEN_SOCKS = "https://hb.afl.rakuten.co.jp/ichiba/54be2163.9d61ed93.54be2164.e7644bae/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fdmastore%2Fmegurina02%2F&link_type=hybrid_url&ut=eyJwYWdlIjoiaXRlbSIsInR5cGUiOiJoeWJyaWRfdXJsIiwic2l6ZSI6IjI0MHgyNDAiLCJuYW0iOjEsIm5hbXAiOiJyaWdodCIsImNvbSI6MSwiY29tcCI6ImRvd24iLCJwcmljZSI6MSwiYm9yIjoxLCJiYnRuIjoxLCJwcm9kIjowLCJhbXAiOmZhbHNlfQ%3D%3D";
+
+const ITEM = {
+  nolty: {emoji:"📓", name:"NOLTY ビジネス手帳", copy:"人生・キャリア設計を見える化。収入を上げる行動の習慣化をサポートに（個人差があります）", price:"¥1,500〜", url:RAKUTEN_NOLTY},
+  night: {emoji:"🌙", name:"DUEN ナイトプラス（GABA・テアニン配合）", copy:"独身の夜のリラックス習慣のサポートに（個人差があります）", price:"¥3,000前後", url:RAKUTEN_NIGHT},
+  socks: {emoji:"🦵", name:"プレスリム 着圧ソックス 夜用（一般医療機器）", copy:"夜のむくみケアをサポートに。医療行為を推奨するものではありません（個人差があります）", price:"¥1,500〜", url:RAKUTEN_SOCKS}
+};
+
+function affItemHTML(it){
+  return `<a class="aff-item" href="${it.url}" target="_blank" rel="nofollow sponsored noopener">
+    <div class="aff-item-emoji">${it.emoji}</div>
+    <div class="aff-item-info">
+      <div class="aff-item-name">${it.name}（PR）</div>
+      <div class="aff-item-copy">${it.copy}</div>
+      <div class="aff-item-price">${it.price}</div>
+    </div>
+    <div class="aff-item-arrow">→</div>
+  </a>`;
+}
+
+/* score連動でカード内容を切替（軽症<35 / 中症35-69 / 重症>=70） */
+function renderAff(score){
+  let title, items;
+  if(score < 35){
+    title = "備えは十分。あとは“設計”を整える1点";
+    items = [ITEM.nolty];
+  } else if(score < 70){
+    title = "独身の夜を整える。設計＋セルフケアの2点";
+    items = [ITEM.nolty, ITEM.night];
+  } else {
+    title = "生活ごと立て直す。おひとり様フルセット";
+    items = [ITEM.night, ITEM.nolty, ITEM.socks];
+  }
+  const tags = items.map(it => affItemHTML(it)).join('');
+  return `<div class="aff-card">
+    <div class="aff-header">
+      <div class="aff-badge">ITEMS</div>
+      <div class="aff-title">${title}</div>
+      <div class="aff-pr">PR</div>
+    </div>
+    <div class="aff-items">${tags}</div>
+    <div class="aff-note">※当ブロックはアフィリエイトを含むPRです。価格は変動する場合があります。健康関連商品の効果には個人差があり、医療行為を推奨するものではありません。手帳・サプリは資産形成や収入を保証するものではありません。</div>
+  </div>`;
+}
+
+/* ====== STATE ====== */
+let last = null;
+
+/* ====== INPUT BINDINGS (realtime) ====== */
+const inputs = {
+  age:     {el:$('age'),     out:$('ageV')},
+  income:  {el:$('income'),  out:$('incomeV')},
+  partner: {el:$('partner'), out:$('partnerV')},
+  kids:    {el:$('kids'),    out:$('kidsV')},
+  free:    {el:$('free'),    out:$('freeV')}
+};
+Object.values(inputs).forEach(o=>{
+  o.el.addEventListener('input', ()=>{ o.out.textContent = o.el.value; });
+});
+
+/* ====== CALC LOGIC ====== */
+function compute(){
+  const age     = parseInt($('age').value,10);
+  const income  = parseInt($('income').value,10);
+  const partner = parseInt($('partner').value,10);
+  const kids    = parseInt($('kids').value,10);
+  const free    = parseInt($('free').value,10);
+
+  const yearsRemaining = LIFE - age;
+  const workingYears   = Math.max(0, RETIRE - age);
+
+  // A：結婚した道（世帯の生涯収支）
+  const incomeM = (income + partner) * workingYears;
+  const kidCost = kids * KID_COST;
+  const costM   = WEDDING + kidCost + LIVING_COUPLE * yearsRemaining;
+  const netM    = incomeM - costM;
+
+  // B：独身を通した道（個人の生涯収支）
+  const freeLife = (free * 12) * yearsRemaining;
+  const incomeS  = income * workingYears;
+  const costS    = LIVING_SINGLE * yearsRemaining + freeLife + SOLO_OLDAGE;
+  const netS     = incomeS - costS;
+
+  const diff = netM - netS; // 正：結婚有利 / 負：独身有利
+
+  // おひとり様 経済リスク指数（高いほど備えが必要）
+  // netS を [-3000 .. +6000]万円 → [95 .. 5] にマップ
+  let score = 95 - (netS - (-3000)) / (6000 - (-3000)) * 90;
+  // 自由支出が多いほどリスク+、年齢が高いほどリスク+
+  score += Math.max(0, free - 5) * 1.2;
+  score += Math.max(0, age - 35) * 0.6;
+  score = Math.max(0, Math.min(100, Math.round(score)));
+
+  return {age, income, partner, kids, free, yearsRemaining, workingYears,
+          incomeM, kidCost, costM, netM, incomeS, costS, netS, freeLife, diff, score};
+}
+
+/* ====== IMPROVE SIMULATION ====== */
+function computeImprove(d){
+  // 年収+50万・月の浪費-2万（free-2、下限1）で独身netSを再計算
+  const newFree   = Math.max(1, d.free - 2);
+  const newIncome = d.income + 50;
+  const freeLife2 = (newFree * 12) * d.yearsRemaining;
+  const incomeS2  = newIncome * d.workingYears;
+  const costS2    = LIVING_SINGLE * d.yearsRemaining + freeLife2 + SOLO_OLDAGE;
+  const netS2     = incomeS2 - costS2;
+  const gain      = netS2 - d.netS; // 万円
+  // 新スコア
+  let score2 = 95 - (netS2 - (-3000)) / (6000 - (-3000)) * 90;
+  score2 += Math.max(0, newFree - 5) * 1.2;
+  score2 += Math.max(0, d.age - 35) * 0.6;
+  score2 = Math.max(0, Math.min(100, Math.round(score2)));
+  const scoreImp = Math.max(0, d.score - score2);
+  // 10年ぶん（年あたりの差を10年で）
+  const perYear = gain / Math.max(1, d.yearsRemaining);
+  const tenY = perYear * 10;
+  return {gain, scoreImp, tenY, newFree, newIncome};
+}
+
+/* ====== ACTION PLAN ====== */
+function planFor(d){
+  const dirWord = d.diff >= 0 ? "結婚の道が数字上は前に出ています" : "独身の道が数字上は前に出ています";
+  const steps = [
+    `<b>① どちらが“得か”で決めない。</b>今回の試算では${dirWord}が、これは年収・子ども・浪費の前提次第で簡単に逆転します。`,
+    `<b>② 独身を選ぶなら“老後の単独負担”を先に積む。</b>おひとり様は介護・住居を一人で負担。差額の一部を毎月の積立に回すと指数が下がります。`,
+    `<b>③ 月の自由支出を可視化する。</b>あなたは月 ${d.free}万円。年 ${d.free*12}万円、残りの人生で <b>${fmtMan(d.freeLife)}</b>。半分を“備え”に回すと景色が変わります。`,
+    `<b>④ 収入の伸びしろを1本持つ。</b>年収を50万円上げるだけで、生涯の備えは大きく増えます（上の改善シミュレーション参照）。`,
+    `<b>⑤ 半年に1回、再計算する。</b>年収・パートナー・子どもの前提は変わります。数字を更新し続けることが、後悔しない設計です。`
+  ];
+  return steps.map((s,i)=>`<div class="plan-step"><div class="plan-no">${i+1}</div><div class="plan-txt">${s}</div></div>`).join('');
+}
+
+/* ====== IMPACT COPY (薬機法・金商法配慮・断定回避) ====== */
+function impactCopy(d){
+  const dir = d.diff >= 0
+    ? `結婚した道の方が世帯として <b>${fmtMan(Math.abs(d.diff))}</b> 多く残る試算`
+    : `独身を通した道の方が <b>${fmtMan(Math.abs(d.diff))}</b> 多く残る試算`;
+  const stage = d.score < 35 ? "比較的しっかり備えられている段階"
+              : d.score < 70 ? "もう一段の備えが効いてくる段階"
+              : "今から備えを設計したい段階";
+  return `あなたの条件では、${dir}になりました。`
+       + `ただし結婚は金額だけで測れる選択ではなく、ここでの数字はあくまで<b>参考値</b>です。`
+       + `おひとり様 経済リスク指数は <b>${d.score}</b>（${stage}）。`
+       + `年収・子ども・浪費の前提を変えれば、どちらの道でも結果は動きます。`;
+}
+
+/* ====== SHARE TEXT (動的数値・URL二重送信なし) ====== */
+const SHARE_URL = "https://mihairisk001.github.io/marriage-lifetime-pl/";
+function shareText(d){
+  const dir = d.diff >= 0 ? `結婚の道が約${fmtMan(Math.abs(d.diff))}前` : `独身の道が約${fmtMan(Math.abs(d.diff))}前`;
+  return `【結婚しなかった生涯 損益計算機】\n`
+       + `私の場合、2つの道の生涯差額は約${fmtMan(Math.abs(d.diff))}（${dir}）。\n`
+       + `おひとり様 経済リスク指数は ${d.score}/100。\n`
+       + `“結婚しない＝損”じゃない。両方向で見てみて → ${SHARE_URL}\n`
+       + `#人生を数値化する研究所 #Takuma #結婚の損益`;
+}
+
+/* ====== VALIDATION ====== */
+function validate(d){
+  if(d.partner > d.income * 3 && d.income < 250){
+    return "配偶者の想定年収が極端に高い設定です。現実的な値に調整してください。";
+  }
+  if(d.workingYears <= 0){
+    return "定年（65歳）までの年数がありません。年齢を確認してください。";
+  }
+  return null;
+}
+
+/* ====== RENDER RESULT ====== */
+function render(d){
+  // verdict tag（指数ベース）
+  const tagEl = $('verdictTag');
+  tagEl.className = 'verdict-tag ' + (d.score<35?'tag-light':d.score<70?'tag-mid':'tag-heavy');
+  tagEl.textContent = d.score<35 ? '備え十分 LIGHT' : d.score<70 ? '要設計 MIDDLE' : '備え不足 HEAVY';
+
+  // big number = 差額の絶対値（万円）
+  countUp($('bigNum'), Math.abs(d.diff), 1600, false);
+  $('bigCap').innerHTML = d.diff >= 0
+    ? '結婚した道の方が世帯として多く残る試算（参考値）'
+    : '独身を通した道の方が多く残る試算（参考値）';
+
+  // donut
+  const arc = $('donutArc');
+  const C = 452;
+  arc.style.transition = 'none';
+  arc.style.strokeDashoffset = C;
+  void arc.getBoundingClientRect();
+  arc.style.transition = 'stroke-dashoffset 1.5s ease';
+  arc.style.strokeDashoffset = C - (C * d.score/100);
+  countUp($('donutScore'), d.score, 1500, false);
+
+  // bidirectional
+  countUp($('biAmountA'), d.netM, 1500, false);
+  countUp($('biAmountB'), d.netS, 1500, false);
+  countUp($('biDiff'), Math.abs(d.diff), 1500, false);
+  $('biDiffNote').innerHTML = d.diff >= 0
+    ? `あなたの条件では <b>結婚した道</b> が数字上は <b>${fmtMan(Math.abs(d.diff))}</b> 前に出ています（参考値・前提で逆転します）`
+    : `あなたの条件では <b>独身を通した道</b> が数字上は <b>${fmtMan(Math.abs(d.diff))}</b> 前に出ています（参考値・前提で逆転します）`;
+
+  // stats
+  countUp($('statRemain'), d.yearsRemaining, 1300, false);
+  countUp($('statWork'), d.workingYears, 1300, false);
+  $('statKidCost').textContent = fmtMan(d.kidCost);
+  $('statFree').textContent = fmtMan(d.freeLife);
+
+  // impact
+  $('impactLine').innerHTML = impactCopy(d);
+
+  // improve simulation
+  const imp = computeImprove(d);
+  $('improveSolo').textContent = fmtMan(imp.gain);
+  countUp($('improveScore'), imp.scoreImp, 1400, false);
+  $('improve10y').textContent = fmtMan(imp.tenY);
+  $('improveSummary').innerHTML = `年収を <b style="color:var(--green)">+50万円</b>、月の浪費を <b style="color:var(--green)">-2万円</b>（月${imp.newFree}万円）にするだけで、独身の道の生涯の備えは約 <b style="color:var(--green)">${fmtMan(imp.gain)}</b> 増える試算です。指数は約 ${imp.scoreImp} ポイント改善します。数字は参考値ですが、今日から動かせます。`;
+
+  // plan
+  $('planBox').innerHTML = planFor(d);
+
+  // affiliate
+  $('affZone').innerHTML = renderAff(d.score);
+
+  // note banner（スコア連動で文言変更）
+  const nt = $('noteTitle');
+  if(d.score < 35){
+    nt.textContent = "結婚しなかった生涯 損益｜備えを“資産”に変える設計";
+  } else if(d.score < 70){
+    nt.textContent = "結婚しなかった生涯 損益｜独身の老後をゼロ不安にする5手順";
+  } else {
+    nt.textContent = "結婚しなかった生涯 損益｜今からでも間に合う立て直しプラン";
+  }
+}
+
+/* ====== EVENTS ====== */
+$('calcBtn').addEventListener('click', ()=>{
+  const d = compute();
+  const err = validate(d);
+  const errEl = $('inputErr');
+  if(err){ errEl.textContent = err; show(errEl); return; }
+  hide(errEl);
+  last = d;
+  show($('result'));
+  render(d);
+  $('result').scrollIntoView({behavior:'smooth', block:'start'});
+});
+
+$('shareX').addEventListener('click', ()=>{
+  if(!last) return;
+  const url = 'https://twitter.com/intent/tweet?text=' + encodeURIComponent(shareText(last));
+  window.open(url, '_blank', 'noopener');
+});
+
+$('copyBtn').addEventListener('click', ()=>{
+  if(!last) return;
+  const txt = shareText(last);
+  navigator.clipboard.writeText(txt).then(showToast).catch(()=>{
+    const ta=document.createElement('textarea');ta.value=txt;document.body.appendChild(ta);ta.select();
+    try{document.execCommand('copy');showToast();}catch(e){}
+    document.body.removeChild(ta);
+  });
+});
+
+function showToast(){
+  const t=$('toast'); t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),1800);
+}
+
+/* ====== RESTART (完全リセット) ====== */
+$('restartBtn').addEventListener('click', ()=>{
+  $('age').value=35;     $('ageV').textContent='35';
+  $('income').value=450; $('incomeV').textContent='450';
+  $('partner').value=350;$('partnerV').textContent='350';
+  $('kids').value=1;     $('kidsV').textContent='1';
+  $('free').value=5;     $('freeV').textContent='5';
+  // clear dynamic zones
+  $('affZone').innerHTML='';
+  $('planBox').innerHTML='';
+  $('impactLine').innerHTML='';
+  $('improveSummary').innerHTML='';
+  $('bigNum').textContent='0';
+  $('bigCap').textContent='2つの道の生涯収支の差額です';
+  $('donutScore').textContent='0';
+  $('biAmountA').textContent='0'; $('biAmountB').textContent='0'; $('biDiff').textContent='0';
+  $('biDiffNote').textContent='あなたの条件では…';
+  $('statRemain').textContent='0'; $('statWork').textContent='0';
+  $('statKidCost').textContent='0'; $('statFree').textContent='0';
+  $('improveSolo').textContent='0万円'; $('improveScore').textContent='0'; $('improve10y').textContent='0万円';
+  const arc=$('donutArc'); arc.style.transition='none'; arc.style.strokeDashoffset=452;
+  const tagEl=$('verdictTag'); tagEl.className='verdict-tag'; tagEl.textContent='判定';
+  $('noteTitle').textContent='結婚しなかった生涯 損益｜後悔しない設計の全手順';
+  hide($('inputErr'));
+  last=null;
+  hide($('result'));
+  $('inputSection').scrollIntoView({behavior:'smooth', block:'start'});
+});
+</script>
+</body>
+</html>
